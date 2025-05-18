@@ -2,44 +2,44 @@ import { useRef, useEffect, useCallback } from 'react';
 import Style from './contentEditable.module.sass';
 
 interface ContentEditableProps {
-    html: string;
+    content: string;
     onChange?: (s: string) => void;
     onBlur?: (s: string) => void;
     onPaste?: (e: React.ClipboardEvent<HTMLDivElement>) => void; // Указываем, что onPaste может быть undefined
     style?: React.CSSProperties;
-    result?: (s: string) => void;
+    setContent?: (s: string) => void;
 }
 
 const ContentEditable = ({
-                             html,
-                             onChange = () => {},
-                             onBlur = () => {},
-                             onPaste, // Теперь onPaste опционально, благодаря интерфейсу
-                             style={},
-                             result = () => {},
-                         }: ContentEditableProps) => {
+    content,
+    onChange = () => {},
+    onBlur = () => {},
+    onPaste, // Теперь onPaste опционально, благодаря интерфейсу
+    style={},
+    setContent = () => {},
+}: ContentEditableProps) => {
     const ref = useRef<HTMLDivElement>(null);
 
     const handleContentChange = useCallback((newHtml: string) => {
         onChange(newHtml);
-        result(newHtml);
-    }, [onChange, result]);
+        setContent(newHtml);
+    }, [onChange, setContent]);
 
 
     const emitChange = () => {
         if (!ref.current) return;
         const curHtml = ref.current.innerHTML;
-        if (curHtml !== html) {
+        if (curHtml !== content) {
             handleContentChange(curHtml);
         }
     };
 
     useEffect(() => {
-        if (ref.current && ref.current.innerHTML !== html) {
-            ref.current.innerHTML = html;
-            handleContentChange(html);
+        if (ref.current && ref.current.innerHTML !== content) {
+            ref.current.innerHTML = content;
+            handleContentChange(content);
         }
-    }, [html, handleContentChange]);
+    }, [content, handleContentChange]);
 
     const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
         e.preventDefault();

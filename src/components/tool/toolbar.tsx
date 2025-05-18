@@ -13,9 +13,7 @@ const COMMAND_PROMPT_MAP: CommandPromptMap = {
     'insertHTML': 'Введите HTML код',
 };
 
-interface ToolbarProps {
-    setContent: (newContent: string) => void;
-}
+interface ToolbarProps {}
 
 const Toolbar: React.FC<ToolbarProps> = ({  }) => {
 
