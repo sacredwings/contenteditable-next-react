@@ -1,41 +1,41 @@
-// app/page.js
+// app/page.tsx
 'use client';
-import React, { useState } from 'react';
-import Modal from '@/components/Modal';
-import ContentEditable from "@/components/tool/contentEditable";
-import ContentEditableTool from "../tool";
 
-interface EditorProps {
+import React, { useState } from 'react';
+
+import Toolbar from '../tool/toolbar';
+import ContentEditable from '../tool/contentEditable';
+import Textarea from '../tool/textarea';
+import Codemirror from '../tool/codemirror';
+import Style from "./index.module.sass";
+
+interface ToolProps {
     content: string
     setContent?: (s: string) => void;
 }
 
-export default function Editor({content, setContent} : EditorProps) {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const openModal = () => {
-        setIsModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-    };
+export default function Tool({content, setContent} : ToolProps) {
+    const [viewCode, setViewCode] = useState(false);
 
     return (
         <div>
-            <h1>Модальное окно Next.js 14</h1>
-            <ContentEditable
+            <Toolbar/>
+
+            <div>
+                <span>Показать исходный код</span>&nbsp;
+                <input type="checkbox" className={Style.checkbox} id="editor-code" onChange={()=>setViewCode(!viewCode)} />
+            </div>
+
+            {viewCode ? <Codemirror
                 content={content}  // Bind content as prop
                 setContent={setContent}
-            />
-            <button onClick={openModal}>Открыть модальное окно</button>
+            /> : <ContentEditable
+                content={content}  // Bind content as prop
+                setContent={setContent}
+            />}
 
-            <Modal isOpen={isModalOpen} onClose={closeModal}>
-                <ContentEditableTool
-                    content={content}  // Bind content as prop
-                    setContent={setContent}
-                />
-            </Modal>
+            <p>HTML Content:</p>
+            <pre>{content}</pre>
         </div>
     );
 }

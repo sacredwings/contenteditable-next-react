@@ -1,0 +1,38 @@
+.editor
+  .button
+    margin: 5px
+    text-align: center
+
+    button
+      display: inline-block
+      font-weight: 400
+      line-height: 1.5
+      color: #fff
+      text-align: center
+      text-decoration: none
+      vertical-align: middle
+      cursor: pointer
+      user-select: none
+      background-color: #007bff
+      border: 1px solid #007bff
+      transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out
+      padding: 0.25rem 0.5rem
+      font-size: 0.875rem
+      border-radius: 0.2rem
+
+      &:hover
+        color: #fff
+        background-color: #0069d9  // Затемнение при наведении
+        border-color: #0062cc  //  Затемнение при наведении
+
+
+      &:focus
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5)
+        outline: 0
+
+
+      &:disabled,
+      &.disabled
+        opacity: 0.65
+        cursor: not-allowed
+        pointer-events: none

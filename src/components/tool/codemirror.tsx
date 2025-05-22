@@ -10,28 +10,33 @@ interface CodeMirrorProps {
     setContent?: (s: string) => void;
 }
 
-export default function CodeMirror ({
+export default function CodeMirror({
     content,
     setContent = () => {}
 }: CodeMirrorProps) {
-    const [errCode, setErrCode] = useState(false);
-    const [isFormatting, setIsFormatting] = useState(false); // Индикатор процесса форматирования
-    const timeoutRef = useRef(null); // Используем useRef для отмены таймаута
+    const [errCode, setErrCode] = useState<boolean>(false);
+    const [isFormatting, setIsFormatting] = useState<boolean>(false); // Индикатор процесса форматирования
+    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null); // Используем useRef для отмены таймаута
 
-    const handleChange = useCallback(async (value) => {
+    const handleChange = useCallback(async (value: string) => {
         setErrCode(false);
         setIsFormatting(true); // Начало форматирования
 
         // Используем setTimeout для задержки форматирования
-        clearTimeout(timeoutRef.current);
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
+
         timeoutRef.current = setTimeout(async () => {
             try {
-                setContent(await prettier.format(value, {
+                const formattedCode = await prettier.format(value, {
                     parser: 'html',
                     plugins: [parserHtml],
                     tabWidth: 2,
-                }));
-            } catch {
+                });
+                setContent(formattedCode);
+            } catch (error) {
+                console.error("Formatting error:", error);
                 setErrCode(true);
             } finally {
                 setIsFormatting(false); // Завершение форматирования
@@ -43,7 +48,11 @@ export default function CodeMirror ({
 
     //  cleanup эффект для отмены таймаута при unmount
     useEffect(() => {
-        return () => clearTimeout(timeoutRef.current);
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        };
     }, []);
 
     return (
